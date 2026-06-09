@@ -1,7 +1,14 @@
-from django.urls import path
-from .views import DocumentListAPIView
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import DocumentViewSet
+
+
+router = DefaultRouter()
+
+
+router.register(r'documents', DocumentViewSet, basename='document')
+
 
 urlpatterns = [
-    # Route traffic hitting 'documents/' to our View
-    path('documents/', DocumentListAPIView.as_view(), name='document-list'),
+    path('', include(router.urls)),
 ]
