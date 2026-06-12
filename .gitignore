@@ -1,4 +1,18 @@
-# .gitignore
-venv/
+# Python & Django
 __pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
 db.sqlite3
+
+# macOS
+.DS_Store
+
+# Xcode & iOS
+DocQueryiOS/.build/
+DocQueryiOS/DerivedData/
+xcuserdata/
+*.xcworkspace/
+*.xcuserstate
