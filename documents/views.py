@@ -20,7 +20,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 
 class RegisterView(APIView):
-    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -29,3 +28,20 @@ class RegisterView(APIView):
             return Response({"message": "User registered successfully!"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    def delete(self, request):
+        request.user.delete()
+        return Response({"message": "User account deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request):
+        user = request.user
+        serializer = RegisterSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()  # Triggers the custom update() method we wrote in serializers.py
+            return Response({"message": "Account updated successfully!"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

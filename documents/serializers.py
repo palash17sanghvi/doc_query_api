@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Document
         fields = ['id', 'title', 'content', 'uploaded_at', 'owner']
@@ -22,3 +24,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])
+        instance.save()
+        return instance
