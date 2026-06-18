@@ -1,5 +1,5 @@
 // Configuration
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = 'http://18.144.161.155:8000/api';
 
 // State Management
 let currentToken = localStorage.getItem('docquery_token');
