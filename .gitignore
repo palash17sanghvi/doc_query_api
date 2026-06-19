@@ -17,3 +17,4 @@ DocQueryiOS/DerivedData/
 xcuserdata/
 *.xcworkspace/
 *.xcuserstate
+staticfiles/
