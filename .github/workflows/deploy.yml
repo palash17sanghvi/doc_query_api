@@ -1,0 +1,28 @@
+name: Continuous Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-connection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Handshake Test with AWS EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "--- HANDSHAKE SUCCESSFUL ---"
+            echo "The GitHub Actions robot has logged into AWS!"
+            echo "Current Linux Kernel Architecture:"
+            uname -a
+            echo "Checking available tools on server:"
+            docker --version
+            docker compose version
