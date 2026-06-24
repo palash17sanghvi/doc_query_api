@@ -24,12 +24,14 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Django Sanity Check
+        env:
+          SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         run: |
           python manage.py check
 
   # --- THE DEPLOYMENT ---
   deploy-to-production:
-    needs: test-code  # <--- This is the magic lock. It will not run unless test-code passes.
+    needs: test-code
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -43,9 +45,20 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             echo "--- STARTING DEPLOYMENT ---"
+            
+            # 1. Navigate to your project folder
             cd doc_query_api
+            
+            # 2. Pull the newest code from GitHub
             git pull origin main
+            
+            # 3. Rebuild and restart the Docker containers
             docker compose up -d --build
+            
+            # 4. Collect static files for Django
             docker compose exec -T web python manage.py collectstatic --noinput
+            
+            # 5. Reload the web server to catch the changes
             sudo systemctl reload nginx
+            
             echo "--- DEPLOYMENT COMPLETE ---"
