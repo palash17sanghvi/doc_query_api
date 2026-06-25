@@ -1,4 +1,4 @@
-name: API Health Monitor
+iname: API Health Monitor
 
 on:
   schedule:
@@ -16,7 +16,7 @@ jobs:
           echo "Pinging DocQuery API..."
           
           # Ping the API and extract ONLY the HTTP status code (e.g., 200, 404, 500)
-          STATUS_CODE=$(curl -o /dev/null -s -w "%{http_code}\n" https://api.yourdomain.com/)
+          STATUS_CODE=$(curl -o /dev/null -s -w "%{http_code}\n" https://palashbackend.zapto.org/)
           
           echo "Received Status Code: $STATUS_CODE"
           
