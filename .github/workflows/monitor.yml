@@ -1,0 +1,29 @@
+name: API Health Monitor
+
+on:
+  schedule:
+    # This cron syntax means: run at minute 0, 5, 10, 15, etc.
+    - cron: '*/5 * * * *'
+  # This line allows you to click a button on GitHub to run it manually for testing
+  workflow_dispatch: 
+
+jobs:
+  ping-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API Status
+        run: |
+          echo "Pinging DocQuery API..."
+          
+          # Ping the API and extract ONLY the HTTP status code (e.g., 200, 404, 500)
+          STATUS_CODE=$(curl -o /dev/null -s -w "%{http_code}\n" https://api.yourdomain.com/)
+          
+          echo "Received Status Code: $STATUS_CODE"
+          
+          # If the code isn't exactly 200, throw a fatal error to trigger an email alert
+          if [ "$STATUS_CODE" -ne 200 ]; then
+            echo "CRITICAL: API is unreachable or returning an error!"
+            exit 1
+          else
+            echo "SUCCESS: API is online and healthy."
+          fi
